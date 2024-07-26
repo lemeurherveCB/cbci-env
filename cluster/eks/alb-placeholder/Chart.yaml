@@ -1,0 +1,5 @@
+apiVersion: v2
+name: alb-placeholder
+description: adapted from https://github.com/kubernetes-sigs/aws-load-balancer-controller/tree/v2.4.5/docs/examples/echoservice to grab a k8s-democbci-*-*.*.elb.amazonaws.com hostname prior to installing demo chart
+type: application
+version: 1.0.0

@@ -1,0 +1,40 @@
+---
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: @CLUSTER_NAME@
+  region: @REGION@
+  version: @KUBERNETES_VERSION@
+
+iam:
+  withOIDC: true
+  serviceAccounts:
+  - metadata:
+      name: aws-load-balancer-controller
+      namespace: kube-system
+    attachPolicyARNs:
+      - arn:aws:iam::@ACCOUNT@:policy/AWSLoadBalancerControllerIAMPolicy-@CLUSTER_NAME@
+
+addons:
+  - name: aws-ebs-csi-driver
+    version: v1.17.0-eksbuild.1
+    attachPolicyARNs:
+      - arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy
+
+managedNodeGroups:
+  - name: ng-linux
+    instanceType: t3.xlarge
+    minSize: 3
+    maxSize: 3
+    iam:
+      withAddonPolicies:
+        ebs: true
+  # - name: ng-windows
+  #   instanceType: t3.xlarge
+  #   amiFamily: WindowsServer2019FullContainer
+  #   minSize: 1
+  #   maxSize: 3
+  #   iam:
+  #     withAddonPolicies:
+  #       ebs: true

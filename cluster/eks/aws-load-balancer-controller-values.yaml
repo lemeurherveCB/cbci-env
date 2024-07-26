@@ -1,0 +1,5 @@
+serviceAccount:
+  create: false
+  name: aws-load-balancer-controller
+nodeSelector:
+  kubernetes.io/os: linux

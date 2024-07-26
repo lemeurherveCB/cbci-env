@@ -1,0 +1,109 @@
+# From dist/cloud-platform-v2/helm-chart/examples/eks-ssl-ingress-example.yaml
+ingress-nginx:
+  Enabled: false
+OperationsCenter:
+  CasC:
+    Enabled: true
+  ExtraVolumes:
+  # - name: mc-casc-bundle
+  #   configMap:
+  #     name: mc-casc-bundle
+  - name: login
+    secret:
+      secretName: login
+  ExtraVolumeMounts:
+  # - name: mc-casc-bundle
+  #   mountPath: /var/jenkins_home/jcasc-bundles-store/mc
+  #   readOnly: true
+  - name: login
+    mountPath: /var/login
+    readOnly: true
+  License:
+    Evaluation:
+      Enabled: true
+      FirstName: Developer
+      LastName: of CloudBees
+      Email: developer@cloudbees.com
+      Company: CloudBees
+  # end from tests/cloudbees-replication/demo/values.yaml
+  Platform: eks
+  Protocol: https  # Added from values-https.yaml
+  Ingress:
+    Class: alb
+    Annotations:
+      alb.ingress.kubernetes.io/scheme: internet-facing
+      # Added from values-https.yaml
+      alb.ingress.kubernetes.io/aws-load-balancer-backend-protocol: "http"
+      alb.ingress.kubernetes.io/aws-load-balancer-ssl-ports: "https"
+      alb.ingress.kubernetes.io/aws-load-balancer-ssl-cert: "$ALB_ACM_CERTIFICATE_ARN"
+  JavaOpts: >-
+    -Djenkins.security.SystemReadPermission=true
+    -Djenkins.security.ManagePermission=true
+    -Dcom.cloudbees.masterprovisioning.kubernetes.KubernetesMasterProvisioning.ingressClass=alb
+Hibernation:
+  Enabled: true
+Agents:
+  SeparateNamespace:
+    Enabled: true
+    Create: true
+
+
+# ### From tests/cloudbees-replication/demo/values.yaml
+# cbci:
+#   OperationsCenter:
+#     CasC:
+#       Enabled: true
+#     JavaOpts: >-
+#       -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
+#       -Dcom.cloudbees.jce.masterprovisioning.DockerImageDefinitionConfiguration.masterImageName=
+#       -Dcom.cloudbees.opscenter.clouds.kubernetes.KubernetesConfiguration.autoconfigure=false
+#     ExtraVolumes:
+#     - name: login
+#       secret:
+#         secretName: login
+#     ExtraVolumeMounts:
+#     - name: login
+#       mountPath: /var/login
+#       readOnly: true
+#     License:
+#       Evaluation:
+#         Enabled: true
+#   Hibernation:
+#     Enabled: true
+#     Protected: true
+#   Agents:
+#     SeparateNamespace:
+#       Enabled: true
+#       Create: true
+#   NetworkPolicy:
+#     Enabled: true
+# gitDaemonImage: null
+# rwxStorageClassName: null
+# controllerJavaOpts: null
+# replication:
+#   replicas: 2
+#   maxReplicas: 5
+#   targetCPUUtilizationPercentage: 50
+# # optional preconfiguration of GitHub
+# github:
+#   # if you want to define App credentials, set this and also create secrets/github-app with the field privateKey in PKCS #8 (hint: openssl pkcs8 -topk8 -nocrypt -in downloaded-key.pem)
+#   appID: null
+#   # if using GitHub Enterprise, set to e.g. https://github.mycompany.com/api/v3
+#   apiUri: null
+#   # if you want to preconfigure a Pipeline library, set this to e.g. https://github.mycompany.com/myorg/mylib
+#   library: null
+#   libraryBranch: master
+# # Optional configuration of GCP to allow use of GCE VM agents.
+# # Create the image: packer build -var project=… -var region=… -var zone=… gce
+# # Grant roles/compute.instanceAdmin & roles/compute.networkAdmin to a GSA bound to the controller:
+# # cbci:
+# #   rbac:
+# #     masterServiceAccountAnnotations:
+# #       iam.gke.io/gcp-service-account: …
+# gcp:
+#   project: null
+#   region: null
+#   zone: null
+# enableSolo: true
+# # Set to true to avoid loading plugins from the update center.
+# airgapped: false

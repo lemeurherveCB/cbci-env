@@ -1,0 +1,24 @@
+OperationsCenter:
+  CasC:
+    Enabled: true
+  ExtraVolumes:
+  - name: mc-casc-bundle
+    configMap:
+      name: mc-casc-bundle
+  - name: login
+    secret:
+      secretName: login
+  ExtraVolumeMounts:
+  - name: mc-casc-bundle
+    mountPath: /var/jenkins_home/jcasc-bundles-store/mc
+    readOnly: true
+  - name: login
+    mountPath: /var/login
+    readOnly: true
+  License:
+    Evaluation:
+      Enabled: true
+      FirstName: Developer
+      LastName: of CloudBees
+      Email: developer@cloudbees.com
+      Company: CloudBees

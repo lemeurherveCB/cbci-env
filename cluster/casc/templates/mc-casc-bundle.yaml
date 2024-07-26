@@ -1,0 +1,141 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mc-casc-bundle
+data:
+  bundle.yaml: |
+    apiVersion: "2"
+    id: mc
+    version: "1"
+    jcasc:
+    - jenkins.yaml
+    plugins:
+    - plugins.yaml
+    items:
+    - items.yaml
+  jenkins.yaml: |
+    jenkins:
+      quietPeriod: 1
+      disabledAdministrativeMonitors:
+      - hudson.diagnosis.TooManyJobsButNoView # TODO symbol tooManyJobsButNoView does not seem to work
+      clouds:
+      - kubernetes:
+          name: kubernetes
+          namespace: cbci-test-hlmp7-6378-builds
+          templates:
+          - name: minimal-k8s
+            label: minimal-k8s
+      - operationsCenterAgentProvisioningService
+      nodes:
+    unclassified:
+      cloudbeesPipelineExplorer:
+        autoPollingEnabled: true
+        autoPollingIntervalSeconds: 3
+        enabled: true
+      usageStatisticsCloudBees:
+        disabledJenkinsUsageStatistics: true
+        usageStatisticsCollected: false
+    notificationConfiguration:
+      enabled: true
+      router: operationsCenter
+    appearance:
+      consoleUrlProvider:
+        providers:
+        - cloudbeesPipelineExplorer
+    credentials:
+      system:
+        domainCredentials:
+        - credentials:
+          - usernamePassword:
+              id: login
+              username: user
+              password: s3cr3t
+              scope: GLOBAL
+  plugins.yaml: |
+    plugins:
+    - id: cloudbees-casc-client
+    - id: cloudbees-casc-items-controller
+    - id: cloudbees-pipeline-explorer
+    - id: cloudbees-ssh-slaves
+    - id: cloudbees-workflow-template
+    - id: configuration-as-code
+    - id: git
+    - id: junit
+    - id: managed-master-hibernation
+    - id: notification-api
+    - id: operations-center-cloud
+    - id: operations-center-notification
+    - id: pipeline-event-step
+    - id: pipeline-input-step
+    - id: pipeline-model-definition
+    - id: ssh-slaves
+    - id: workflow-basic-steps
+    - id: workflow-multibranch
+  items.yaml: |
+    removeStrategy:
+      rbac: SYNC
+      items: NONE
+    items:
+    - kind: pipeline
+      name: sample-project
+      description: |
+        This is a sample project using credentials defined in the controller.
+      definition:
+        cpsFlowDefinition:
+          sandbox: true
+          script: |
+            pipeline {
+              agent {
+                kubernetes {
+                  cloud 'kubernetes'
+                }
+              }
+              environment {
+                USER_PASS = credentials('login')
+              }
+              stages {
+                stage('all') {
+                  steps {
+                    sh '''
+                      echo masked: "$USER_PASS"
+                      echo unmasked: `echo "$USER_PASS" | tr [a-z] [A-Z]`
+                    '''
+                  }
+                }
+              }
+            }
+    - kind: pipeline
+      name: simple
+      description: |
+        This is a simple project running for while without using any agent.
+      definition:
+        cpsFlowDefinition:
+          sandbox: true
+          script: |
+            for (int i = 0; i < 99; i++) {
+                stage("round #$i") {
+                   sleep 10
+                }
+            }
+    - kind: pipeline
+      name: interactive
+      description: |
+        This is a sample project requiring an interaction with the user to continue.
+      definition:
+        cpsFlowDefinition:
+          sandbox: true
+          script: |
+            input 'Ready to go?'
+    - kind: pipeline
+      name: scheduled
+      description: |
+        This is a sample project running on a schedule (every 5 minutes).
+      definition:
+        cpsFlowDefinition:
+          sandbox: true
+          script: echo 'OK'
+      properties:
+      - pipelineTriggers:
+          triggers:
+          - cron:
+              spec: '*/5 * * * *'

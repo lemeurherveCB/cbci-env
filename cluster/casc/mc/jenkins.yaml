@@ -1,0 +1,11 @@
+jenkins:
+  quietPeriod: 1
+unclassified:
+  hibernationConfiguration: # TODO BEE-650
+    enabled: true
+    gracePeriod: 1800
+  usageStatisticsCloudBees:
+    disabledJenkinsUsageStatistics: true
+    usageStatisticsCollected: false
+  timestamper:
+    allPipelines: true
