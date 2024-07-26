@@ -30,11 +30,3 @@ managedNodeGroups:
     iam:
       withAddonPolicies:
         ebs: true
-  # - name: ng-windows
-  #   instanceType: t3.xlarge
-  #   amiFamily: WindowsServer2019FullContainer
-  #   minSize: 1
-  #   maxSize: 3
-  #   iam:
-  #     withAddonPolicies:
-  #       ebs: true
