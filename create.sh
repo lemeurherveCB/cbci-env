@@ -8,6 +8,7 @@ for command in aws eksctl helm curl kubectl; do
   fi
 done
 
+
 PREFIX="${PREFIX:-pentest}"
 CLUSTER="${CLUSTER:-$PREFIX-$RANDOM}"
 HOSTED_ZONE="${HOSTED_ZONE:-env.beescloud.com}"
@@ -17,6 +18,8 @@ KUBERNETES_VERSION="'1.28'"
 
 aws sso login --profile cloudbees-cloud-platform-dev
 export AWS_PROFILE=cloudbees-cloud-platform-dev
+# Prevent aws to open EDITOR after creating IAM policies
+export AWS_PAGER=
 
 ACCOUNT=$(aws sts get-caller-identity --query Account --output text)
 AWS_REGION=$(aws configure get region)
@@ -32,7 +35,7 @@ AWS_LOAD_BALANCER_APP_VERSION=$(helm show chart --repo https://aws.github.io/eks
 # Create AWS IAM Policy to allow AWS Load Balancer controller to manage AWS resources if it doesn't exist
 if ! aws iam get-policy --policy-arn "arn:aws:iam::${ACCOUNT}:policy/AWSLoadBalancerControllerIAMPolicy-${CLUSTER}" >/dev/null 2>&1; then
   curl --silent --fail --output tmp/iam-policy.json --location "https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/${AWS_LOAD_BALANCER_APP_VERSION}/docs/install/iam_policy.json"
-  aws iam create-policy --policy-name "AWSLoadBalancerControllerIAMPolicy-${CLUSTER}" --policy-document file://tmp/iam-policy.json --output text
+  aws iam create-policy --policy-name "AWSLoadBalancerControllerIAMPolicy-${CLUSTER}" --policy-document file://tmp/iam-policy.json
 fi
 
 # Create cluster if there isn't already a cluster configuration file with the same name
@@ -84,8 +87,7 @@ EOF
 if ! aws iam get-policy --policy-arn "arn:aws:iam::${ACCOUNT}:policy/external-dns-${CLUSTER}" >/dev/null 2>&1; then
   aws iam create-policy \
     --policy-name "external-dns-${CLUSTER}" \
-    --policy-document file:///tmp/external-dns-policy.json \
-    --output text
+    --policy-document file:///tmp/external-dns-policy.json
 fi
 
 eksctl create iamserviceaccount \
