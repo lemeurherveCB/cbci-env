@@ -24,14 +24,26 @@ data:
           - id: admin
             name: Administrator
             password: ${readFile:/var/login/password}
+          - id: admin-2
+            name: Administrator 2
+            password: ${readFile:/var/login/password}
           - id: manager
             name: Manager
+            password: ${readFile:/var/login/password}
+          - id: manager-2
+            name: Manager 2
             password: ${readFile:/var/login/password}
           - id: developer
             name: Developer
             password: ${readFile:/var/login/password}
+          - id: developer-2
+            name: Developer 2
+            password: ${readFile:/var/login/password}
           - id: browser
             name: Browser
+            password: ${readFile:/var/login/password}
+          - id: browser-2
+            name: Browser 2
             password: ${readFile:/var/login/password}
       authorizationStrategy: "cloudBeesRoleBasedAccessControl"
       numExecutors: 0
@@ -110,6 +122,7 @@ data:
     - members:
         users:
         - admin
+        - admin-2
       roles:
       - name: administer
         grantedAt: current
@@ -117,6 +130,7 @@ data:
     - members:
         users:
         - developer
+        - developer-2
       roles:
       - name: develop
         grantedAt: current
@@ -124,6 +138,7 @@ data:
     - members:
         users:
         - browser
+        - browser-2
       roles:
       - name: browse
         grantedAt: current
@@ -131,6 +146,7 @@ data:
     - members:
         users:
         - manager
+        - manager-2
       roles:
       - name: manage
         grantedAt: current
