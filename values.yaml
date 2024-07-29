@@ -36,7 +36,7 @@ OperationsCenter:
       alb.ingress.kubernetes.io/aws-load-balancer-backend-protocol: "http"
       alb.ingress.kubernetes.io/aws-load-balancer-ssl-ports: "https"
       alb.ingress.kubernetes.io/aws-load-balancer-ssl-cert: "$ALB_ACM_CERTIFICATE_ARN"
-      alb.ingress.kubernetes.io/inbound-cidrs: 34.73.99.37
+      alb.ingress.kubernetes.io/inbound-cidrs: 34.73.99.37/32,149.12.71.96/27,151.181.197.0/25,154.51.64.64/27,167.98.195.240/28,167.98.200.192/27,195.95.131.0/24,203.63.83.64/27,209.146.32.224/27,210.8.164.160/27,34.255.23.234/32,38.98.162.224/27,38.99.30.0/25,5.148.32.192/26,5.148.69.16/28,5.148.8.192/26,50.207.126.192/27,62.116.201.80/28,72.138.73.192/27,75.87.16.64/27
   JavaOpts: >-
     -Djenkins.security.SystemReadPermission=true
     -Djenkins.security.ManagePermission=true

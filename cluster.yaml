@@ -7,6 +7,13 @@ metadata:
   region: @REGION@
   version: @KUBERNETES_VERSION@
 
+vpc:
+  clusterEndpoints:
+    publicAccess: true
+    privateAccess: true
+  # Restrict access to API server to CloudBees VPN CIDR
+  publicAccessCIDRs: ["34.73.99.37/32"]
+
 iam:
   withOIDC: true
   serviceAccounts:
