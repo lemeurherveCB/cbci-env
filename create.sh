@@ -45,7 +45,9 @@ if [ ! -f "tmp/${CLUSTER}-cluster.yaml" ]; then
 fi
 
 # Install AWS Load Balancer controller
-kubectl apply -k "github.com/aws/eks-charts/stable/aws-load-balancer-controller//crds?ref=master"
+kubectl apply -k "github.com/aws/eks-charts/stable/aws-load-balancer-controller//crds?ref=master" || \
+(curl --silent --fail --output tmp/crds.yaml --location https://raw.githubusercontent.com/aws/eks-charts/master/stable/aws-load-balancer-controller/crds/crds.yaml && \
+kubectl apply -f tmp/crds.yaml)
 
 helm upgrade --install \
   --repo https://aws.github.io/eks-charts \
