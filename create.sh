@@ -117,7 +117,7 @@ kubectl config set-context --current --namespace=cloudbees-core
 
 helm upgrade --install --namespace cloudbees-core casc casc
 
-helm repo add cloudbees https://public-charts.artifacts.cloudbees.com/repository/public/
+helm repo add cloudbees https://public-charts.artifacts.cloudbees.com/repository/public/ || echo "cloudbees repo already added"
 helm upgrade --install \
   --values values.yaml \
   --set OperationsCenter.HostName="$HOST_NAME" \
