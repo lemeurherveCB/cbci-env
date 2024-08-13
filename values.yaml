@@ -47,7 +47,14 @@ Agents:
   SeparateNamespace:
     Enabled: true
     Create: true
-
+ContainerSecurityContext:
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop:
+    - ALL
+  runAsNonRoot: true
+  seccompProfile:
+    type: RuntimeDefault
 
 # ### From tests/cloudbees-replication/demo/values.yaml
 # cbci:
