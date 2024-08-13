@@ -1,6 +1,8 @@
 # From dist/cloud-platform-v2/helm-chart/examples/eks-ssl-ingress-example.yaml
 ingress-nginx:
   Enabled: false
+NetworkPolicy:
+  Enabled: true
 OperationsCenter:
   CasC:
     Enabled: true
