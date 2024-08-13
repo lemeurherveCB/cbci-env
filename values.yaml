@@ -43,6 +43,14 @@ OperationsCenter:
     -Dcom.cloudbees.masterprovisioning.kubernetes.KubernetesMasterProvisioning.ingressClass=alb
 Hibernation:
   Enabled: true
+  SecurityContext:
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+      - ALL
+    runAsNonRoot: true
+    seccompProfile:
+      type: RuntimeDefault
 Agents:
   SeparateNamespace:
     Enabled: true
