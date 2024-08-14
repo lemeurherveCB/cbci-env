@@ -65,7 +65,12 @@ ContainerSecurityContext:
   runAsNonRoot: true
   seccompProfile:
     type: RuntimeDefault
-
+SecurityContext:
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: true
+  capabilities:
+    drop:
+      - all
 # ### From tests/cloudbees-replication/demo/values.yaml
 # cbci:
 #   OperationsCenter:
